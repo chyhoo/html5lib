@@ -1,35 +1,30 @@
+"""Tree adapters let you convert from one tree structure to another
+
+Example:
+
+.. code-block:: python
+
+   import html5lib
+   from html5lib.treeadapters import genshi
+
+   doc = '<html><body>Hi!</body></html>'
+   treebuilder = html5lib.getTreeBuilder('etree')
+   parser = html5lib.HTMLParser(tree=treebuilder)
+   tree = parser.parse(doc)
+   TreeWalker = html5lib.getTreeWalker('etree')
+
+   genshi_tree = genshi.to_genshi(TreeWalker(tree))
+
 """
-HTML parsing library based on the `WHATWG HTML specification
-<https://whatwg.org/html>`_. The parser is designed to be compatible with
-existing HTML found in the wild and implements well-defined error recovery that
-is largely compatible with modern desktop web browsers.
-
-Example usage::
-
-    import html5lib
-    with open("my_document.html", "rb") as f:
-        tree = html5lib.parse(f)
-
-For convenience, this module re-exports the following names:
-
-* :func:`~.html5parser.parse`
-* :func:`~.html5parser.parseFragment`
-* :class:`~.html5parser.HTMLParser`
-* :func:`~.treebuilders.getTreeBuilder`
-* :func:`~.treewalkers.getTreeWalker`
-* :func:`~.serializer.serialize`
-"""
-
 from __future__ import absolute_import, division, unicode_literals
 
-from .html5parser import HTMLParser, parse, parseFragment
-from .treebuilders import getTreeBuilder
-from .treewalkers import getTreeWalker
-from .serializer import serialize
+from . import sax
 
-__all__ = ["HTMLParser", "parse", "parseFragment", "getTreeBuilder",
-           "getTreeWalker", "serialize"]
+__all__ = ["sax"]
 
-# this has to be at the top level, see how setup.py parses this
-#: Distribution version number.
-__version__ = "1.1"
+try:
+    from . import genshi  # noqa
+except ImportError:
+    pass
+else:
+    __all__.append("genshi")
